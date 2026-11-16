@@ -15,8 +15,9 @@ host = "http://127.0.0.1:11434"
 [intelligence]
 preferred_engine = "ollama"        # force local Ollama, not the NIM cloud router
 
-# Role mapping — used by `-m smart` and when -m is omitted. All 21 local
-# models remain usable directly via `-m <name>` regardless of this.
+# Role mapping — default_model applies when -m is omitted. Pick any model
+# explicitly with `-m <name>` (e.g. -m qwen2.5-coder:7b). NOTE: `-m smart`
+# is NOT supported by this build (Ollama rejects "smart" as a model name).
 default_model = "qwen2.5:14b"      # best all-round quality that fits 8GB (bake-off winner)
 model_chat    = "qwen2.5:14b"      # conversation
 model_code    = "qwen2.5-coder:7b" # coding tasks
