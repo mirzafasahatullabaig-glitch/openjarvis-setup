@@ -1,21 +1,38 @@
-# OpenJarvis config — local agent wired to Ollama (qwen2.5:14b)
+# Code Assistant — agent with code execution, file I/O, and shell access
 # Copy to ~/.openjarvis/config.toml
 #
 # Usage:
 #   jarvis ask "Write a Python script that parses CSV files"
-#   jarvis chat                         # interactive looping chat
-#   jarvis agent run "read main.py and explain the architecture"
+#   jarvis ask "Read main.py and explain the architecture"
+#   jarvis ask --agent orchestrator "Find and fix the bug in test_utils.py"
 
 [engine]
 default = "ollama"
 
 [engine.ollama]
-host = "http://127.0.0.1:11434"    # REQUIRED: defaults to "" so Ollama shows Unreachable
+host = "http://127.0.0.1:11434"
 
 [intelligence]
-default_model = "qwen2.5:14b"
-preferred_engine = "ollama"        # force local Ollama, not the NIM cloud router (404s)
-# default_model = "qwen3.5:4b"     # Smaller/faster, also installed locally
+preferred_engine = "ollama"        # force local Ollama, not the NIM cloud router
+
+# Role mapping — used by `-m smart` and when -m is omitted. All 21 local
+# models remain usable directly via `-m <name>` regardless of this.
+default_model = "qwen2.5:14b"      # best all-round quality that fits 8GB (bake-off winner)
+model_chat    = "qwen2.5:14b"      # conversation
+model_code    = "qwen2.5-coder:7b" # coding tasks
+model_short   = "qwen3.5:4b"       # fast / short replies
+model_long    = "qwen2.5:14b"      # long-context reasoning
+fallback_model = "qwen2.5:7b"      # if the primary is busy/unavailable
+
+# All installed Ollama models (auto-discovered; use any with  -m <name> ):
+#   dolphincoder:15b        qwen2.5:14b           llama3.1:8b
+#   qwen2.5:7b              qwen2.5-coder:7b      dolphin-llama3:8b
+#   deepseek-coder:6.7b     gemma3:4b             qwen3.5:4b
+#   qwen3.5:2b              llama3.2:3b           qwen3-vl:2b
+#   qwen2.5:3b              qwen3-vl:2b-instruct  granite4:350m
+#   smollm2:360m            qwen:0.5b             qwen2.5:0.5b-instruct
+#   qwen2:0.5b-instruct     smollm2:135m          reader-lm:0.5b
+# (qwen3-vl:* are vision models; reader-lm is for HTML->markdown.)
 
 [agent]
 default_agent = "orchestrator"      # Multi-turn with tool selection
