@@ -44,7 +44,10 @@ Copy-Item "$PSScriptRoot\config.toml" "$cfgDir\config.toml" -Force
 $src = "$HOME\AppData\Local\OpenJarvis\src"
 $env:VIRTUAL_ENV = "$src\.venv"
 & "$HOME\.local\bin\uv.exe" pip install kokoro soundfile
-# Then:  jarvis chat --voice   (mic input + spoken replies)
+# STT on GPU: faster-whisper's CUDA backend needs these NVIDIA runtime libs.
+& "$HOME\.local\bin\uv.exe" pip install nvidia-cublas-cu12 nvidia-cudnn-cu12 nvidia-cuda-nvrtc-cu12
+# Then launch via run-jarvis.ps1 (it puts the above DLLs on PATH):
+#   .\run-jarvis.ps1 chat --voice
 
 $jarvis = "$HOME\AppData\Local\OpenJarvis\bin\jarvis.cmd"
 # self-check: config must parse and the ollama engine must be reachable

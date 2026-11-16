@@ -45,10 +45,11 @@ max_turns = 10
 enabled = ["code_interpreter", "file_read", "file_write", "shell_exec", "web_search", "think", "calculator"]
 
 [speech]
-# STT on CPU: faster-whisper's CUDA path needs cublas/cudnn DLLs not on PATH.
-# whisper 'base' on CPU is fast enough for short voice clips. TTS (kokoro) is CPU too.
-device = "cpu"
-compute_type = "int8"              # CPU-compatible (float16 is GPU-only)
+# STT on GPU. Needs the venv's nvidia cublas/cudnn DLL dirs on PATH BEFORE
+# launch (see run-jarvis.ps1) — faster-whisper's native loader won't find
+# them otherwise. Much faster than CPU after first-run CUDA init.
+device = "cuda"
+compute_type = "float16"
 model = "base"
 
 [security]

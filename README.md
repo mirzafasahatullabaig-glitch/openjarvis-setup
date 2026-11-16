@@ -21,19 +21,28 @@ OpenJarvis installer with all three on PATH; copies `config.toml` to
 
 ## Run
 
-In a **fresh** PowerShell (so `jarvis` is on PATH):
+Use the wrapper `run-jarvis.ps1` — it sets the whisper CUDA DLL path, the
+context cap, and the npm flag, then passes your args through:
 
 ```powershell
-jarvis ask "..."          # one-shot question
-jarvis chat               # interactive looping chat
-jarvis chat --voice       # voice: mic input (STT) + spoken replies (TTS)
-jarvis agent run "..."    # agent with file/shell/code tools
+.\run-jarvis.ps1 ask "..."        # one-shot question
+.\run-jarvis.ps1 chat             # interactive looping chat
+.\run-jarvis.ps1 chat --voice     # voice: mic (STT, GPU) + spoken reply (TTS)
+.\run-jarvis.ps1 gui              # web UI at http://127.0.0.1:5173
+.\run-jarvis.ps1 agent run "..."  # agent with file/shell/code tools
 ```
 
-**Voice:** STT = faster-whisper (GPU), TTS = kokoro (CPU, voice `bm_george`).
-`setup.ps1` installs kokoro; without it `--voice` hears you but can't speak.
-LLM inference runs on the NVIDIA GPU via Ollama/CUDA (the 8.4GB qwen2.5:14b
-partially spills to CPU on 8GB VRAM; the 7B models run 100% on GPU).
+(Plain `jarvis <cmd>` also works from a fresh shell, but STT-on-GPU needs the
+DLL path the wrapper sets, or it falls back with a cublas DLL error.)
+
+**Voice:** STT = faster-whisper on **CUDA/NVIDIA** (needs `nvidia-cublas-cu12` +
+`nvidia-cudnn-cu12` in the venv and their bin dirs on PATH — `run-jarvis.ps1`
+handles the PATH; `setup.ps1` installs the libs). TTS = kokoro (CPU, `bm_george`).
+
+**GPU:** LLM runs on the NVIDIA RTX 5050 via Ollama/CUDA. Default is `qwen2.5:7b`
+(4.8GB, 100% GPU). `qwen2.5:14b` is 10GB so it spills ~38% to CPU on 8GB VRAM —
+pick it only when you want max quality: `-m qwen2.5:14b`. The Intel UHD drives the
+display (normal laptop hybrid-graphics); it is not used for inference.
 
 **Safety:** confirm-before-each-action is the default — tools that run shell
 commands, write files, or execute code prompt `[y/N]` (default No). Press `y`
