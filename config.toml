@@ -18,12 +18,14 @@ preferred_engine = "ollama"        # force local Ollama, not the NIM cloud route
 # Role mapping — default_model applies when -m is omitted. Pick any model
 # explicitly with `-m <name>` (e.g. -m qwen2.5-coder:7b). NOTE: `-m smart`
 # is NOT supported by this build (Ollama rejects "smart" as a model name).
-default_model = "qwen2.5:14b"      # best all-round quality that fits 8GB (bake-off winner)
-model_chat    = "qwen2.5:14b"      # conversation
-model_code    = "qwen2.5-coder:7b" # coding tasks
-model_short   = "qwen3.5:4b"       # fast / short replies
-model_long    = "qwen2.5:14b"      # long-context reasoning
-fallback_model = "qwen2.5:7b"      # if the primary is busy/unavailable
+default_model = "qwen2.5:7b"       # runs 100% on GPU (4.8GB fits 8GB VRAM); GUI uses this
+model_chat    = "qwen2.5:7b"       # conversation, full GPU
+model_code    = "qwen2.5-coder:7b" # coding tasks, full GPU
+model_short   = "qwen3.5:4b"       # fast / short replies, full GPU
+model_long    = "qwen2.5:14b"      # max quality; ~38% spills to CPU (10GB > 8GB VRAM)
+fallback_model = "qwen2.5:7b"
+# Pick the smarter-but-partly-CPU 14B explicitly when you want it:
+#   jarvis ask -m qwen2.5:14b "..."
 
 # All installed Ollama models (auto-discovered; use any with  -m <name> ):
 #   dolphincoder:15b        qwen2.5:14b           llama3.1:8b
