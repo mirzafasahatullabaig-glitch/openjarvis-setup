@@ -1,0 +1,7 @@
+# Nothing runtime lives here (OpenJarvis installs to %LOCALAPPDATA%\OpenJarvis).
+# Guard against stray local files.
+*.log
+*.db
+__pycache__/
+.venv/
+credentials.toml

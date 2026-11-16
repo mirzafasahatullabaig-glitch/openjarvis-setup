@@ -1,0 +1,32 @@
+# OpenJarvis config — local agent wired to Ollama (qwen2.5:14b)
+# Copy to ~/.openjarvis/config.toml
+#
+# Usage:
+#   jarvis ask "Write a Python script that parses CSV files"
+#   jarvis chat                         # interactive looping chat
+#   jarvis agent run "read main.py and explain the architecture"
+
+[engine]
+default = "ollama"
+
+[engine.ollama]
+host = "http://127.0.0.1:11434"    # REQUIRED: defaults to "" so Ollama shows Unreachable
+
+[intelligence]
+default_model = "qwen2.5:14b"
+preferred_engine = "ollama"        # force local Ollama, not the NIM cloud router (404s)
+# default_model = "qwen3.5:4b"     # Smaller/faster, also installed locally
+
+[agent]
+default_agent = "orchestrator"      # Multi-turn with tool selection
+max_turns = 10
+
+[tools]
+enabled = ["code_interpreter", "file_read", "file_write", "shell_exec", "web_search", "think", "calculator"]
+
+[security]
+profile = "personal"               # loopback-only + PII redaction (single-user local)
+
+[analytics]
+enabled = false
+choice_recorded = true
