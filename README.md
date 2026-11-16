@@ -26,8 +26,14 @@ In a **fresh** PowerShell (so `jarvis` is on PATH):
 ```powershell
 jarvis ask "..."          # one-shot question
 jarvis chat               # interactive looping chat
+jarvis chat --voice       # voice: mic input (STT) + spoken replies (TTS)
 jarvis agent run "..."    # agent with file/shell/code tools
 ```
+
+**Voice:** STT = faster-whisper (GPU), TTS = kokoro (CPU, voice `bm_george`).
+`setup.ps1` installs kokoro; without it `--voice` hears you but can't speak.
+LLM inference runs on the NVIDIA GPU via Ollama/CUDA (the 8.4GB qwen2.5:14b
+partially spills to CPU on 8GB VRAM; the 7B models run 100% on GPU).
 
 **Safety:** confirm-before-each-action is the default — tools that run shell
 commands, write files, or execute code prompt `[y/N]` (default No). Press `y`

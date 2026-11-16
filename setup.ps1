@@ -39,6 +39,13 @@ $cfgDir = "$HOME\.openjarvis"
 if (-not (Test-Path $cfgDir)) { New-Item -ItemType Directory $cfgDir | Out-Null }
 Copy-Item "$PSScriptRoot\config.toml" "$cfgDir\config.toml" -Force
 
+# Voice: STT (faster-whisper) ships with the installer. TTS (kokoro) does not —
+# install it into OpenJarvis's uv venv (pulls CPU torch; fine, TTS is light).
+$src = "$HOME\AppData\Local\OpenJarvis\src"
+$env:VIRTUAL_ENV = "$src\.venv"
+& "$HOME\.local\bin\uv.exe" pip install kokoro soundfile
+# Then:  jarvis chat --voice   (mic input + spoken replies)
+
 $jarvis = "$HOME\AppData\Local\OpenJarvis\bin\jarvis.cmd"
 # self-check: config must parse and the ollama engine must be reachable
 $doctor = & $jarvis doctor 2>&1 | Out-String
