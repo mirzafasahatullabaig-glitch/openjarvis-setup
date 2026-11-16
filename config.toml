@@ -42,6 +42,13 @@ max_turns = 10
 [tools]
 enabled = ["code_interpreter", "file_read", "file_write", "shell_exec", "web_search", "think", "calculator"]
 
+[speech]
+# STT on CPU: faster-whisper's CUDA path needs cublas/cudnn DLLs not on PATH.
+# whisper 'base' on CPU is fast enough for short voice clips. TTS (kokoro) is CPU too.
+device = "cpu"
+compute_type = "int8"              # CPU-compatible (float16 is GPU-only)
+model = "base"
+
 [security]
 profile = "personal"               # loopback-only + PII redaction (single-user local)
 
